@@ -1,27 +1,30 @@
 import React from 'react';
-//import InputField from './components/InputField.js';
+import { useForm } from 'react-hook-form';
 import './App.css';
 
+const FindPath = (data) => {
+  // run backend processes on start and dest airports
+  console.log(data.start);
+  console.log(data.dest);
+};
+
 function App() {
+  // handles getting the information from the client
+  const { register, handleSubmit } = useForm();
   return (
     <div className="App">
       <header className="App-header">
         Planedemic
       </header>
       <div>
-            <form styles={{
-              width: 700,
-              height: 700
-            }}>
-                <input placeholder="Start" style={{
-                  width: 100,
-                  height: 50
-                }}/>
-                <input placeholder="Destination"/>
-                <button>Submit</button>
-            </form>
+        <form onSubmit={handleSubmit(FindPath)}>
+          <input name="start" placeholder="Start" ref={register} />
+          <input name="dest" placeholder="Destination" ref={register} />
+          <input type="submit" />
+        </form>
       </div>
     </div>
   );
 }
+
 export default App;
