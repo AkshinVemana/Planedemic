@@ -1,19 +1,28 @@
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
 
 public class Preprocessor {
+
+    public static void main(String[] args) {
+        getAirportLocation();
+    }
 
     public static TreeMap<String, TreeSet<String>> preprocess () {
         TreeMap<String, TreeSet<String>> routes = new TreeMap<>();
         parseData(routes);
+        getAirportLocation();
         return routes;
     }
 
     private static void parseData (TreeMap<String, TreeSet<String>> routes) {
-        File file = new File("dataLoader\\routes.txt");
+        File file = new File("dataLoader/routes.txt");
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (sc.hasNextLine()) {
                 String next = sc.nextLine();
@@ -30,8 +39,8 @@ public class Preprocessor {
         }
     }
 
-    public static HashMap<String, String> getAbbreviations() {
-        File file = new File("dataLoader\\state_abbreviations.json");
+    private static HashMap<String, String> getAbbreviations() {
+        File file = new File("dataLoader/state_abbreviations.json");
         HashMap<String, String> abbreviations = new HashMap<>();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (sc.hasNextLine()) {
@@ -46,18 +55,28 @@ public class Preprocessor {
     }
 
     public static HashMap<String, String> getAirportLocation() {
-        File file = new File("dataLoader\\airports.json");
-        HashMap<String, String> locations = new HashMap<>();
-        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
-            while (sc.hasNextLine()) {
-                String next = sc.nextLine();
-                String[] abbrevs = next.split(": ");
-                if (abbrevs[0].equals("code"))
-                locations.put(abbrevs[0], abbrevs[1].substring(1,3));
+
+        HashMap<String, String> airportLocations = new HashMap<>();
+        HashMap<String, String> abbrevs = getAbbreviations();
+        JSONParser parser = new JSONParser();
+        try {
+            Object obj = parser.parse(new FileReader("dataLoader/airports.json"));
+            JSONArray airports = (JSONArray)obj;
+            Iterator iterator = airports.iterator();
+            while(iterator.hasNext()) {
+                JSONObject airport = (JSONObject)iterator.next();
+                String code = (String)airport.get("code");
+                String state = (String)airport.get("state");
+                if(abbrevs.containsKey(state)) {
+                    airportLocations.put(code, abbrevs.get(state));
+                } else {
+                    airportLocations.put(code, "INTERNATIONAL");
+                }
             }
-        } catch (IOException e) {
+
+        } catch(Exception e) {
             e.printStackTrace();
         }
-        return locations;
+        return airportLocations;
     }
 }

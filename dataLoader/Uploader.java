@@ -18,7 +18,7 @@ import java.util.TreeSet;
 public class Uploader {
 
     private static TreeMap<String, TreeSet<String>> routes;
-    private static HashMap<String, String> stateAbbreviations;
+    private static HashMap<String, String> airportLocations;
     private static Firestore db;
     private static final boolean DEBUG = false;
 
@@ -28,6 +28,7 @@ public class Uploader {
 
     public static void upload () throws IOException {
         getRoutes();
+        getLocations();
         initDB();
         assert db != null : "Database cannot be null.";
 
@@ -37,7 +38,7 @@ public class Uploader {
         for (String route : routes.keySet()) {
             HashMap<String, Object> fields = new HashMap<>();
             fields.put("flights", new ArrayList<>(routes.get(route)));
-//            fields.put("state", stateAbbreviations.get())
+            fields.put("state", airportLocations.get(route));
             ApiFuture<WriteResult> result = colRef.document(route).set(fields);
             while (!result.isDone()) {
                 // hi! if you're reading this, we apologize
@@ -51,7 +52,7 @@ public class Uploader {
     }
 
     private static void initDB () throws IOException {
-        InputStream serviceAccount = new FileInputStream("service_account_credentials.json");
+        InputStream serviceAccount = new FileInputStream("dataLoader/service_account_credentials.json");
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(credentials)
@@ -67,9 +68,9 @@ public class Uploader {
         debug("Preprocessed data.");
     }
 
-    private static void getAbbrevs () {
+    private static void getLocations () {
         debug("Getting abbreviations...");
-        stateAbbreviations = Preprocessor.getAbbreviations();
+        airportLocations = Preprocessor.getAirportLocation();
         debug("Stored abbreviations.");
     }
 
