@@ -17,13 +17,14 @@ public class Preprocessor {
 
     public static TreeMap<String, TreeSet<String>> preprocess() {
         TreeMap<String, TreeSet<String>> routes = new TreeMap<>();
-        parseData(routes);
         getAirportLocation();
+        parseData(routes);
         return routes;
     }
 
     // Read the routes data and creates a TreeMap containing all the connections for a given airport
     private static void parseData(TreeMap<String, TreeSet<String>> routes) {
+        HashMap<String, String> locations = getAirportLocation();
         File file = new File("dataLoader/routes.txt");
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (sc.hasNextLine()) {
@@ -31,10 +32,13 @@ public class Preprocessor {
                 String[] route = next.split(",");
                 String start = route[2];
                 String dest = route[4];
-                if (!routes.containsKey(start)) {
-                    routes.put(start, new TreeSet<>());
+                if(locations.containsKey(start)) {
+                    if (!routes.containsKey(start)) {
+                        routes.put(start, new TreeSet<>());
+                    }
+                    if(locations.containsKey(dest))
+                         routes.get(start).add(dest);
                 }
-                routes.get(start).add(dest);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,8 +77,6 @@ public class Preprocessor {
                 String state = (String) airport.get("state");
                 if (abbrevs.containsKey(state)) {
                     airportLocations.put(code, abbrevs.get(state));
-                } else if (state != null) {
-                    airportLocations.put(code, "INTERNATIONAL");
                 }
             }
         } catch (Exception e) {
