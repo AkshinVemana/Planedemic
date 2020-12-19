@@ -1,8 +1,8 @@
-from planedemic.src.assets.Graph import Graph
+from Graph import Graph
 
 
 def main():
-    test = Graph("SFO")
+    test = Graph("ABE")
 
 
 if __name__ == '__main__':

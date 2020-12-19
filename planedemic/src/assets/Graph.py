@@ -16,6 +16,7 @@ class Vertex:
         self.cost_from_start = float("inf")
         self.scratch = 0
         self.adjacent = []
+        self.path = []
 
     # def comparator(self, a, b):
     #     if a.cases == b.cases:
@@ -34,7 +35,7 @@ def auth_firebase():
     # data_folder = Path("")
     # TODO: make this into relative path
     cred = credentials.Certificate(
-        "TEMP_INSERT_PATH_HERE")
+        "/Users/shravanravi/Hackathons/WinterHacklympics-2020/service_account_credentials.json")
     firebase_admin.initialize_app(cred)
 
     print("firebase authenticated.")
@@ -65,8 +66,9 @@ class Graph:
 
     def clear_all(self):
         for vertex in self.vertices:
-            vertex.cost_from_start = float("inf")
-            vertex.scratch = 0
+            cur_vertex = self.vertices[vertex]
+            cur_vertex.cost_from_start = float("inf")
+            cur_vertex.scratch = 0
 
 
     def create_graph(self, start_vertex: Vertex):
@@ -76,10 +78,24 @@ class Graph:
             print("Invalid start vertex.")
             return None
 
-        pq = PriorityQueue()
-        pq.put(start_vertex)
-        while pq.not_empty:
-            curVertex = pq.get()
+        flight_paths = PriorityQueue()
+        start_vertex.cost_from_start = 0
+        flight_paths.put(start_vertex)
+        while not flight_paths.empty():
+            cur_vertex = flight_paths.get()
+            cur_vertex.scratch = -1
+            for connection_name in cur_vertex.adjacent:
+                connection = self.vertices[connection_name]
+                cost = cur_vertex.cost_from_start + connection.cases
+                if connection.scratch != -1 and connection.cost_from_start > cost:
+                    # found a cheaper path
+                    connection.cost_from_start = cost
+                    connection.path.append(cur_vertex.code)
+                    flight_paths.put(connection)
+
+        print("DONE")
+
+
 
 
 

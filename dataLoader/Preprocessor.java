@@ -25,7 +25,7 @@ public class Preprocessor {
     // Read the routes data and creates a TreeMap containing all the connections for a given airport
     private static void parseData(TreeMap<String, TreeSet<String>> routes) {
         HashMap<String, String> locations = getAirportLocation();
-        File file = new File("dataLoader/routes.txt");
+        File file = new File("routes.txt");
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (sc.hasNextLine()) {
                 String next = sc.nextLine();
@@ -36,8 +36,12 @@ public class Preprocessor {
                     if (!routes.containsKey(start)) {
                         routes.put(start, new TreeSet<>());
                     }
-                    if(locations.containsKey(dest))
-                         routes.get(start).add(dest);
+                    if(locations.containsKey(dest)) {
+                        routes.get(start).add(dest);
+                        if(!routes.containsKey(dest))
+                            routes.put(dest, new TreeSet<>());
+                    }
+
                 }
             }
         } catch (IOException e) {
@@ -48,7 +52,7 @@ public class Preprocessor {
     // Reads through the state_abbreviations.json to translate state names to
     // their respective abbreviation in a HashMap
     private static HashMap<String, String> getAbbreviations() {
-        File file = new File("dataLoader/state_abbreviations.txt");
+        File file = new File("state_abbreviations.txt");
         HashMap<String, String> abbreviations = new HashMap<>();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (sc.hasNextLine()) {
@@ -68,7 +72,7 @@ public class Preprocessor {
         HashMap<String, String> abbrevs = getAbbreviations();
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(new FileReader("dataLoader/airports.json"));
+            Object obj = parser.parse(new FileReader("airports.json"));
             JSONArray airports = (JSONArray) obj;
             Iterator iterator = airports.iterator();
             while (iterator.hasNext()) {
