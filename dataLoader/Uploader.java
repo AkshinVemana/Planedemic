@@ -22,7 +22,7 @@ public class Uploader {
 
     private static TreeMap<String, TreeSet<String>> routes;
     private static Firestore db;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     public static void main (String[] args) throws Exception {
         upload();
@@ -35,7 +35,7 @@ public class Uploader {
 
         debug("Adding all routes...");
 
-        CollectionReference colRef = db.collection("airport");
+        CollectionReference colRef = db.collection("connections");
         for (String route : routes.keySet()) {
             HashMap<String, Object> fields = new HashMap<>();
             fields.put("flights", new ArrayList<>(routes.get(route)));
@@ -63,7 +63,9 @@ public class Uploader {
     }
 
     private static void getRoutes () {
+        debug("Preprocessing data...");
         routes = Preprocessor.preprocess();
+        debug("Preprocessed data.");
     }
 
     private static void debug (String text) {
