@@ -531,11 +531,12 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/vscode,python,pycharm,intellij,java,node,react,macos,windows,firebase
 
-# testing
+# testing / production
 /coverage
-
-# production
 /build
 
 # firebase credentials
 service_account_credentials.json
+
+# eslintcache
+planedemic/.eslintcache
