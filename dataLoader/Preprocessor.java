@@ -14,7 +14,7 @@ public class Preprocessor {
     public static void main(String[] args) {
         getAirportLocation();
     }
-    
+
     public static TreeMap<String, TreeSet<String>> preprocess() {
         TreeMap<String, TreeSet<String>> routes = new TreeMap<>();
         parseData(routes);
@@ -44,7 +44,7 @@ public class Preprocessor {
     // Reads through the state_abbreviations.json to translate state names to
     // their respective abbreviation in a HashMap
     private static HashMap<String, String> getAbbreviations() {
-        File file = new File("dataLoader/state_abbreviations.json");
+        File file = new File("dataLoader/state_abbreviations.txt");
         HashMap<String, String> abbreviations = new HashMap<>();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (sc.hasNextLine()) {
