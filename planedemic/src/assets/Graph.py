@@ -17,6 +17,16 @@ class Vertex:
         self.scratch = 0
         self.adjacent = []
 
+    # def comparator(self, a, b):
+    #     if a.cases == b.cases:
+    #         return -1
+    #     return a.cases - b.cases
+
+    def __lt__(self, other):
+        # if (self.cases == other.cases):
+        #     return False
+        return self.cases <= other.cases
+
 
 def auth_firebase():
     print("authenticating firebase...")
@@ -53,20 +63,36 @@ def generate_vertices(firestore_db):
 
 class Graph:
 
+    def clear_all(self):
+        for vertex in self.vertices:
+            vertex.cost_from_start = float("inf")
+            vertex.scratch = 0
+
+
     def create_graph(self, start_vertex: Vertex):
         # dijkstra's algorithm
+        self.clear_all()
         if (start_vertex is None):
-            print("Invalid vertex")
-            return
+            print("Invalid start vertex.")
+            return None
+
+        pq = PriorityQueue()
+        pq.put(start_vertex)
+        while pq.not_empty:
+            curVertex = pq.get()
+
+
+
 
         print(start_vertex.state)
 
     def __init__(self, start):
         firestore_db = auth_firebase()
-        vertices = generate_vertices(firestore_db)
-        print(len(vertices))
+        self.vertices = generate_vertices(firestore_db)
+      #  print(len(vertices))
 
-        self.create_graph(vertices[start])
+        self.create_graph(self.vertices[start])
+
 
     # def main():
     #     firestore_db = auth_firebase()
