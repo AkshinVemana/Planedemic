@@ -51,7 +51,7 @@ def generate_vertices(firestore_db):
 
 def generate_costs():
     state_case_values = {}
-    request = requests.get("https://api.covidtracking.com/v1/states/current.json");
+    request = requests.get("https://api.covidtracking.com/v1/states/current.json")
     for information in request.json():
         state_case_values[information['state']] = information['positive'] * 0.00001
     return state_case_values
@@ -70,7 +70,7 @@ class Graph:
         if (start_vertex is None):
             print("Invalid start vertex.")
             return None
-        self.start = start_vertex;
+        self.start = start_vertex
         flight_paths = PriorityQueue()
         start_vertex.cost_from_start = 0
         flight_paths.put(start_vertex)

@@ -12,16 +12,17 @@ app.post('/', async(req,res) => {
     const request = req;
     console.log('\n')
     console.log(request.body);
+    var dataToSend
     const runScript = spawn('python3', ['assets/GraphGenerator.py', request.body.start, request.body.dest]);
     runScript.stdout.on('data',  (data) => {
-        console.log("Python Boy...");
         console.log(data.toString());
+        dataToSend = data.toString()
     });
     // runScript.stderr.on('data', (data) => {
     //     console.error(data)
     // });
-    runScript.on('close', () =>{
-        console.log("Here");
+    runScript.on('close', (code) =>{
+        res.send(dataToSend)
     });
 });
 

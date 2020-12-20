@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import './App.css';
 import { sendData } from './API';
 
-const FindPath = async (data) => {
-  // run backend processes on start and dest airports
-  const path = await sendData(data);
-  console.log(path);
-};
+
+
+
+
 
 function App() {
+  var [bestRoute, setBestRoute] = useState('');
+  const FindPath = async (data) => {
+    // run backend processes on start and dest airports
+    setBestRoute('');
+    const path = await sendData(data);
+    setBestRoute(path);
+  };
+  
   // handles getting the information from the client
   const { register, handleSubmit } = useForm();
   return (
@@ -24,6 +31,7 @@ function App() {
           <input type="submit" />
         </form>
       </div>
+      {bestRoute ? <div>{bestRoute}</div> : null}
     </div>
   );
 }

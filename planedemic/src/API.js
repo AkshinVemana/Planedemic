@@ -8,6 +8,7 @@ export async function sendData(data) {
         },
         body: JSON.stringify(data)
     });
-
-    return response.json();
+    var temp = response.text()
+    console.log(temp)
+    return temp
 }
