@@ -1,11 +1,12 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import './App.css';
+import { sendData } from './API';
 
-const FindPath = (data) => {
+const FindPath = async (data) => {
   // run backend processes on start and dest airports
-  console.log(data.start);
-  console.log(data.dest);
+  const path = await sendData(data);
+  console.log(path);
 };
 
 function App() {
