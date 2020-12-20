@@ -18,9 +18,9 @@ app.post('/', async(req,res) => {
         console.log(data.toString());
         dataToSend = data.toString()
     });
-    // runScript.stderr.on('data', (data) => {
-    //     console.error(data)
-    // });
+    runScript.stderr.on('data', (data) => {
+        console.error("U DONE GOOFED")
+    });
     runScript.on('close', (code) =>{
         res.send(dataToSend)
     });

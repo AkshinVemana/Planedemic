@@ -4,7 +4,8 @@ from Graph import Graph
 
 def main():
     test = Graph(sys.argv[1])
-    print(test.get_path(sys.argv[2]))
+    ret = str(test.get_all_paths(sys.argv[2]))
+    print(ret[1:len(ret) - 1])
 
 
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 
-const Route = ({route}) =>{
+const BestRoute = ({route}) =>{
     var path = route.split(',')
-    path[0] = path[0].substring(3, 6)
+    path[0] = path[0].substring(1, 3)
     path[0] += " -> "
     for(var i = 1; i < path.length - 1; i++) {
         path[i] = path[i].trim();
@@ -24,8 +24,13 @@ const Route = ({route}) =>{
     }
     return(
         <div>
-            <div style={{color:color}}>Here is a route: {path} </div>
+            <div style={{
+                color:color,
+                fontSize: '30',
+                fontWeight: 'bold',
+
+                }}>This is the best route: {path}</div>
         </div>
     );
 }
-export default Route;
+export default BestRoute;

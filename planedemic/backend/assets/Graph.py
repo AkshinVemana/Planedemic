@@ -114,7 +114,6 @@ class Graph:
         return path
 
     def get_all_paths(self, dest):
-        print(self.vertices[dest].best_cost_from_start)
         self.vertices[dest].paths.append(self.vertices[dest].best_path)
         return self.vertices[dest].paths
 
