@@ -1,9 +1,9 @@
+from queue import PriorityQueue
+
 import firebase_admin
+import requests
 from firebase_admin import credentials
 from firebase_admin import firestore
-
-from queue import PriorityQueue
-import requests
 
 
 # from pathlib import Path
@@ -14,10 +14,14 @@ class Vertex:
         self.cases = cases
         self.code = code
         self.state = state
+        self.best_cost_from_start = float("inf")
         self.cost_from_start = float("inf")
         self.scratch = 0
         self.adjacent = []
-        self.prev = []
+        self.best_prev = code
+        self.prev = code
+        self.best_path = []
+        self.paths = []
 
     def __lt__(self, other):
         # if (self.cases == other.cases):
@@ -56,6 +60,7 @@ def generate_costs():
         state_case_values[information['state']] = information['positive'] * 0.00001
     return state_case_values
 
+
 class Graph:
 
     def clear_all(self):
@@ -80,23 +85,38 @@ class Graph:
             for connection_name in cur_vertex.adjacent:
                 connection = self.vertices[connection_name]
                 cost = cur_vertex.cost_from_start + connection.cases
-                if connection.scratch != -1 and connection.cost_from_start > cost:
-                    # found a cheaper path
-                    connection.cost_from_start = cost
-                    connection.prev = cur_vertex.code
-                    flight_paths.put(connection)
-                    # implement out degree variance calculation for edge cost
+                if connection.scratch != -1:
+                    if connection.best_cost_from_start > cost:
+                        connection.best_cost_from_start = cost
+                        connection.best_prev = cur_vertex.code
+                        connection.best_path = self.get_path(connection.code, True)
+                        flight_paths.put(connection)
+                    if connection.cost_from_start == float('inf'):
+                        connection.cost_from_start = cost
+                        connection.prev = cur_vertex.code
+                    elif len(connection.paths) < 5 and connection.prev != cur_vertex.code:
+                        connection.cost_from_start = cost
+                        connection.prev = cur_vertex.code
+                        connection.paths.append(self.get_path(connection.code, False))
+                        flight_paths.put(connection)
 
-    def get_path(self, dest):
+
+    def get_path(self, dest, best):
         path = []
         cur_vertex = self.vertices[dest]
-        print(cur_vertex.cost_from_start)
         while cur_vertex != self.start:
             path.append(cur_vertex.code)
-            cur_vertex = self.vertices.get(cur_vertex.prev)
+            cur_vertex = self.vertices.get(cur_vertex.best_prev) if best else self.vertices.get(cur_vertex.prev)
         path.append(self.start.code)
         path.reverse()
+        cost = self.vertices[dest].best_cost_from_start if best else self.vertices[dest].cost_from_start
+        path.append(cost)
         return path
+
+    def get_all_paths(self, dest):
+        print(self.vertices[dest].best_cost_from_start)
+        self.vertices[dest].paths.append(self.vertices[dest].best_path)
+        return self.vertices[dest].paths
 
     def __init__(self, start):
         firestore_db = auth_firebase()
