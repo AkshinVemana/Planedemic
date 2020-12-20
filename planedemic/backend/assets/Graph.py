@@ -3,6 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 from queue import PriorityQueue
+import requests
 
 
 # from pathlib import Path
@@ -17,11 +18,6 @@ class Vertex:
         self.scratch = 0
         self.adjacent = []
         self.prev = []
-
-    # def comparator(self, a, b):
-    #     if a.cases == b.cases:
-    #         return -1
-    #     return a.cases - b.cases
 
     def __lt__(self, other):
         # if (self.cases == other.cases):
@@ -39,18 +35,26 @@ def auth_firebase():
 
 
 def generate_vertices(firestore_db):
+    state_case_values = generate_costs()
     airports_ref = firestore_db.collection(u'airports')
     airports = airports_ref.stream()
 
     vertices = {}
-
     for airport in airports:
         airports_dict = airport.to_dict()
-        # TODO: implement cost
-        vertices[airport.id] = Vertex(0, airport.id, airports_dict['state'])
+        num_connections = len(airports_dict['connections'])
+        cases = state_case_values[airports_dict['state']] * num_connections
+        vertices[airport.id] = Vertex(cases, airport.id, airports_dict['state'])
         vertices[airport.id].adjacent = airports_dict['connections']
     return vertices
 
+
+def generate_costs():
+    state_case_values = {}
+    request = requests.get("https://api.covidtracking.com/v1/states/current.json");
+    for information in request.json():
+        state_case_values[information['state']] = information['positive'] * 0.00001
+    return state_case_values
 
 class Graph:
 
@@ -79,13 +83,14 @@ class Graph:
                 if connection.scratch != -1 and connection.cost_from_start > cost:
                     # found a cheaper path
                     connection.cost_from_start = cost
-                    connection.prev = cur_vertex.code;
+                    connection.prev = cur_vertex.code
                     flight_paths.put(connection)
                     # implement out degree variance calculation for edge cost
 
     def get_path(self, dest):
         path = []
         cur_vertex = self.vertices[dest]
+        print(cur_vertex.cost_from_start)
         while cur_vertex != self.start:
             path.append(cur_vertex.code)
             cur_vertex = self.vertices.get(cur_vertex.prev)
@@ -96,6 +101,4 @@ class Graph:
     def __init__(self, start):
         firestore_db = auth_firebase()
         self.vertices = generate_vertices(firestore_db)
-        #  print(len(vertices))
-
         self.create_graph(self.vertices[start])
