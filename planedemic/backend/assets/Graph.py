@@ -30,16 +30,11 @@ class Vertex:
 
 
 def auth_firebase():
-    print("authenticating firebase...")
-
     # data_folder = Path("")
     # TODO: make this into relative path
     cred = credentials.Certificate(
         "/Users/shravanravi/Hackathons/WinterHacklympics-2020/service_account_credentials.json")
     firebase_admin.initialize_app(cred)
-
-    print("firebase authenticated.")
-
     return firestore.client()
 
 
@@ -54,11 +49,6 @@ def generate_vertices(firestore_db):
         # TODO: implement cost
         vertices[airport.id] = Vertex(0, airport.id, airports_dict['state'])
         vertices[airport.id].adjacent = airports_dict['connections']
-
-    # print(len(vertices))
-    # print(vertices['AAE'].adjacent)
-    # print (vertices)
-
     return vertices
 
 
@@ -70,7 +60,7 @@ class Graph:
             cur_vertex.cost_from_start = float("inf")
             cur_vertex.scratch = 0
 
-    def create_graph(self, start_vertex: Vertex):
+    def create_graph(self, start_vertex):
         # dijkstra's algorithm
         self.clear_all()
         if (start_vertex is None):
@@ -92,7 +82,6 @@ class Graph:
                     connection.prev = cur_vertex.code;
                     flight_paths.put(connection)
                     # implement out degree variance calculation for edge cost
-        print("DONE")
 
     def get_path(self, dest):
         path = []
@@ -110,9 +99,3 @@ class Graph:
         #  print(len(vertices))
 
         self.create_graph(self.vertices[start])
-
-    # def main():
-    #     firestore_db = auth_firebase()
-    #     vertices = generate_vertices(firestore_db)
-    #
-    #     print(len(vertices))
