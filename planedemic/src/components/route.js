@@ -18,13 +18,13 @@ const Route = ({route}) =>{
     } else if (cost >= 750) {
         color = 'orange'
     } else if (cost >= 500) {
-        color = 'yellow'
+        color = '#ffd700'
     } else {
         color = 'green'
     }
     return(
         <div>
-            <div style={{color:color}}>Here is a route: {path} </div>
+            <div style={{color:color}}>{path} </div>
         </div>
     );
 }

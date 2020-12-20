@@ -18,7 +18,7 @@ const BestRoute = ({route}) =>{
     } else if (cost >= 750) {
         color = 'orange'
     } else if (cost >= 500) {
-        color = 'yellow'
+        color = '#cc9900'
     } else {
         color = 'green'
     }
@@ -29,7 +29,7 @@ const BestRoute = ({route}) =>{
                 fontSize: '30',
                 fontWeight: 'bold',
 
-                }}>This is the best route: {path}</div>
+                }}>{path}</div>
         </div>
     );
 }
