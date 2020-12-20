@@ -16,7 +16,7 @@ class Vertex:
         self.cost_from_start = float("inf")
         self.scratch = 0
         self.adjacent = []
-        self.path = []
+        self.prev = []
 
     # def comparator(self, a, b):
     #     if a.cases == b.cases:
@@ -70,14 +70,13 @@ class Graph:
             cur_vertex.cost_from_start = float("inf")
             cur_vertex.scratch = 0
 
-
     def create_graph(self, start_vertex: Vertex):
         # dijkstra's algorithm
         self.clear_all()
         if (start_vertex is None):
             print("Invalid start vertex.")
             return None
-
+        self.start = start_vertex;
         flight_paths = PriorityQueue()
         start_vertex.cost_from_start = 0
         flight_paths.put(start_vertex)
@@ -90,25 +89,27 @@ class Graph:
                 if connection.scratch != -1 and connection.cost_from_start > cost:
                     # found a cheaper path
                     connection.cost_from_start = cost
-                    connection.path.append(cur_vertex.code)
+                    connection.prev = cur_vertex.code;
                     flight_paths.put(connection)
-
+                    # implement out degree variance calculation for edge cost
         print("DONE")
 
-
-
-
-
-
-        print(start_vertex.state)
+    def get_path(self, dest):
+        path = []
+        cur_vertex = self.vertices[dest]
+        while cur_vertex != self.start:
+            path.append(cur_vertex.code)
+            cur_vertex = self.vertices.get(cur_vertex.prev)
+        path.append(self.start.code)
+        path.reverse()
+        return path
 
     def __init__(self, start):
         firestore_db = auth_firebase()
         self.vertices = generate_vertices(firestore_db)
-      #  print(len(vertices))
+        #  print(len(vertices))
 
         self.create_graph(self.vertices[start])
-
 
     # def main():
     #     firestore_db = auth_firebase()

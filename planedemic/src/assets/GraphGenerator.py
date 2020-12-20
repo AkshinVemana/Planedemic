@@ -2,7 +2,8 @@ from Graph import Graph
 
 
 def main():
-    test = Graph("ABE")
+    test = Graph("SFO")
+    print(test.get_path("JST"))
 
 
 if __name__ == '__main__':
