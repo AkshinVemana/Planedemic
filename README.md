@@ -3,13 +3,13 @@
 
 
 ## About
-With COVID-19 vaccine availability in sight, people will be traveling regardless of potential risks. Planedemic is a a flight recommendation engine that combats this by generating the lowest-risk routes between two locations using live case numbers and historical flight path data.
+With COVID-19 vaccine availability in sight, people will be traveling regardless of potential risks. Planedemic is a flight recommendation engine that combats this by generating the lowest-risk routes between two locations using live case numbers and historical flight path data.
 
 
 ## Instructions
 To run this web application, you must first instantiate the front-end and back-end services.
-For the frontend, navigate to the WinterHacklympics-2020/planedemic subdirectory, install prerequisite packages with `npm install`, then start the node server with `npm start`. 
-For the backend, navigate to the WinterHacklympics-2020/planedemic/backend subdirectory and run `index.js` with your preferred process manager (or simply `node index.js`).
+For the frontend, navigate to the [WinterHacklympics-2020/planedemic](planedemic/) subdirectory, install prerequisite packages with `npm install`, then start the node server with `npm start`. 
+For the backend, navigate to the [WinterHacklympics-2020/planedemic/backend](planedemic/backend/) subdirectory and run `index.js` with your preferred process manager (or simply `node index.js`).
 
 After starting your instance of the servers, you can navigate to `localhost:3000` to view the live web app. To use the app, input a US IATA airport code for both the `Start` and `Destination` input boxes and select `Submit`. The app will display the best routes it calculates, color coded based on COVID risk.
 
